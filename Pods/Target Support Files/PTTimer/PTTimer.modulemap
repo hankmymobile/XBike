@@ -1,0 +1,6 @@
+framework module PTTimer {
+  umbrella header "PTTimer-umbrella.h"
+
+  export *
+  module * { export * }
+}
