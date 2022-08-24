@@ -33,10 +33,14 @@ class CurrentRideViewController: UIViewController {
     var lastLocation: CLLocation!
     var startDate: Date!
     var traveledDistance: Double = 0
+    var address1 = ""
+    var address2 = ""
+    var hasAddress1 = false
+    var hasAddress2 = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       
+        
         self.viewRide1.layer.cornerRadius = 10.0
         self.viewRide2.layer.cornerRadius = 10.0
         self.viewRide3.layer.cornerRadius = 10.0
@@ -56,20 +60,20 @@ class CurrentRideViewController: UIViewController {
         mapView.settings.myLocationButton = true
         if !hasLocationPermission() {
             let alertController = UIAlertController(title: "Location Permission Required", message: "Please enable location permissions in settings.", preferredStyle: UIAlertController.Style.alert)
-                    
-                    let okAction = UIAlertAction(title: "Settings", style: .default, handler: {(cAlertAction) in
-                        //Redirect to Settings app
-                        UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
-                    })
             
-                    
+            let okAction = UIAlertAction(title: "Settings", style: .default, handler: {(cAlertAction) in
+                //Redirect to Settings app
+                UIApplication.shared.open(URL(string:UIApplication.openSettingsURLString)!)
+            })
+            
+            
             let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel)
-                    alertController.addAction(cancelAction)
-                    
-                    alertController.addAction(okAction)
-                    
-                    self.present(alertController, animated: true, completion: nil)
-                }
+            alertController.addAction(cancelAction)
+            
+            alertController.addAction(okAction)
+            
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
     
     @IBAction func addRide(_ sender: Any) {
@@ -80,6 +84,8 @@ class CurrentRideViewController: UIViewController {
     
     @IBAction func startRide(_ sender: Any) {
         //Start  timer
+        hasAddress1 = false
+        hasAddress2 = false
         isRouteStarted = true
         timer.start()
     }
@@ -102,7 +108,7 @@ class CurrentRideViewController: UIViewController {
         self.viewRide2.isHidden = true
         self.viewRide3.isHidden = false
         
-        let route1 = RouteModel(time: "00:55:15", addressA: "Dirección 1", addressB: "Dirección 2", distance: "22 Km")
+        let route1 = RouteModel(time: lblTimerView2.text ?? "", addressA: address1, addressB: address2, distance: "22 Km")
         
         self.currentRidePresenter.setViewDelegate(currentRidePresenterDelegate: self)
         self.currentRidePresenter.saveRoute(route: route1)
@@ -125,6 +131,8 @@ class CurrentRideViewController: UIViewController {
     }
     
     func clearInfo(){
+        hasAddress1 = false
+        hasAddress2 = false
         isRouteStarted = false
         lblTimerView1.text = "00:00:00"
         lblTimerView2.text = "00:00:00"
@@ -136,20 +144,45 @@ class CurrentRideViewController: UIViewController {
     }
     
     func hasLocationPermission() -> Bool {
-            var hasPermission = false
-            if CLLocationManager.locationServicesEnabled() {
-                switch CLLocationManager.authorizationStatus() {
-                case .notDetermined, .restricted, .denied:
-                    hasPermission = false
-                case .authorizedAlways, .authorizedWhenInUse:
-                    hasPermission = true
-                }
-            } else {
+        var hasPermission = false
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .notDetermined, .restricted, .denied:
                 hasPermission = false
+            case .authorizedAlways, .authorizedWhenInUse:
+                hasPermission = true
             }
-            
-            return hasPermission
+        } else {
+            hasPermission = false
         }
+        
+        return hasPermission
+    }
+    
+    private func reverseGeocodeCoordinate(_ coordinate: CLLocationCoordinate2D, labelShow: Int) {
+        
+      // 1
+      let geocoder = GMSGeocoder()
+        
+      // 2
+      geocoder.reverseGeocodeCoordinate(coordinate) { response, error in
+        guard let address = response?.firstResult(), let lines = address.lines else {
+          return
+        }
+          
+        // 3
+          if labelShow == 1 {
+              self.address1 = lines.joined(separator: "\n")
+          }else {
+              self.address2 = lines.joined(separator: "\n")
+          }
+          
+        // 4
+        UIView.animate(withDuration: 0.25) {
+          self.view.layoutIfNeeded()
+        }
+      }
+    }
 }
 
 extension CurrentRideViewController: CurrentRidePresenterDelegate {
@@ -186,45 +219,52 @@ extension CurrentRideViewController: PTTimerDelegate {
         
         self.lblTimerView1.text = "\(hora):\(minuto):\(segundos)"
     }
-
+    
     func timerDidPause() {
-      // update label colors, buttons for a paused timer
+        // update label colors, buttons for a paused timer
     }
-
+    
     func timerDidStart() {
-      // update label colors, buttons for a started timer
+        // update label colors, buttons for a started timer
     }
-
+    
     func timerDidReset() {
-      // update label colors, buttons now that the timer has been reset
+        // update label colors, buttons now that the timer has been reset
     }
 }
 
 extension CurrentRideViewController: CLLocationManagerDelegate {
-  // 2
-  func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-    // 3
-    guard status == .authorizedWhenInUse else {
-      return
+    // 2
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        // 3
+        guard status == .authorizedWhenInUse else {
+            return
+        }
+        // 4
+        locationManager.startUpdatingLocation()
+        
+        //5
+        mapView.isMyLocationEnabled = true
+        mapView.settings.myLocationButton = true
     }
-    // 4
-    locationManager.startUpdatingLocation()
-      
-    //5
-    mapView.isMyLocationEnabled = true
-    mapView.settings.myLocationButton = true
-  }
-  
-  // 6
-  func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-    guard let location = locations.first else {
-      return
+    
+    // 6
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else {
+            return
+        }
+        
+        // 7
+        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        if !hasAddress1 && timer.state == .running {
+            hasAddress1 = true
+            reverseGeocodeCoordinate(GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0).target, labelShow: 1)
+        }else {
+            if timer.state == .paused && !hasAddress2 {
+                hasAddress2 = true
+                reverseGeocodeCoordinate(GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0).target, labelShow: 2)
+            }
+        }
+        
     }
-      
-    // 7
-    mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
-      
-    // 8
-    locationManager.stopUpdatingLocation()
-  }
 }
