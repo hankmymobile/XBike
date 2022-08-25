@@ -16,13 +16,13 @@
 	<array>
 		<string>abel-regular.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDarkContent</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Su ubicación será usada para encontrar las sucursales más cercanas.</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Su ubicación será usada para encontrar las sucursales más cercanas.</string>
 </dict>
 </plist>

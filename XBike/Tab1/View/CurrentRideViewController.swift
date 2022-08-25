@@ -36,6 +36,7 @@ class CurrentRideViewController: UIViewController {
     var address2 = ""
     var hasAddress1 = false
     var hasAddress2 = false
+    var goCurrentLocationCamera = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,8 +53,8 @@ class CurrentRideViewController: UIViewController {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
         locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.startUpdatingLocation()
         locationManager.distanceFilter = 1
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
@@ -83,10 +84,12 @@ class CurrentRideViewController: UIViewController {
     
     @IBAction func startRide(_ sender: Any) {
         //Start  timer
+        goCurrentLocationCamera = true
         hasAddress1 = false
         hasAddress2 = false
         isRouteStarted = true
         timer.start()
+        locationManager.requestLocation()
     }
     
     @IBAction func stopRide(_ sender: Any) {
@@ -134,6 +137,7 @@ class CurrentRideViewController: UIViewController {
     }
     
     func clearInfo(){
+        mapView.clear()
         timer.reset()
         startLocation = nil
         lastLocation = nil
@@ -261,18 +265,29 @@ extension CurrentRideViewController: CLLocationManagerDelegate {
             return
         }
         
-        print("Traveled Distance:",  traveledDistance)
-        
         lastLocation = locations.last
-        // 7
-        mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        
+        if goCurrentLocationCamera {
+            goCurrentLocationCamera = false
+            mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 18, bearing: 0, viewingAngle: 0)
+        }
         
         if timer.state == .running {
             if startLocation == nil {
-                    startLocation = locations.first as! CLLocation
+                startLocation = locations.first!
             } else {
-                let lastLocation = locations.last as! CLLocation
+                let lastLocation = locations.last!
                 let distance = startLocation.distance(from: lastLocation)
+                
+                let path = GMSMutablePath()
+                path.add(CLLocationCoordinate2D(latitude: startLocation.coordinate.latitude, longitude: startLocation.coordinate.longitude))
+                path.add(CLLocationCoordinate2D(latitude: lastLocation.coordinate.latitude, longitude: lastLocation.coordinate.longitude))
+
+                let polyline = GMSPolyline(path: path)
+                polyline.strokeColor = .blue
+                polyline.strokeWidth = 5.0
+                polyline.map = mapView
+                
                 startLocation = lastLocation
                 if distance > 0 && distance < 5 {
                     traveledDistance += distance
@@ -281,15 +296,30 @@ extension CurrentRideViewController: CLLocationManagerDelegate {
         }
         
         if !hasAddress1 && timer.state == .running {
-            
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+            marker.title = "Start route"
+            //marker.snippet = "Australia"
+            marker.map = mapView
             hasAddress1 = true
             reverseGeocodeCoordinate(GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0).target, labelShow: 1)
         }else {
             if timer.state == .paused && !hasAddress2 {
+                
+                let marker = GMSMarker()
+                marker.position = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+                marker.title = "End route"
+                //marker.snippet = "Australia"
+                marker.map = mapView
+                
                 hasAddress2 = true
                 reverseGeocodeCoordinate(GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0).target, labelShow: 2)
             }
         }
         
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Handle failure to get a user’s location
     }
 }

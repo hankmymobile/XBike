@@ -506,8 +506,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = XBike/Info.plist;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Local network access is needed for tests";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app need track your route";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Su ubicación será usada para encontrar las sucursales más cercanas.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "This app need track your route";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Su ubicación será usada para encontrar las sucursales más cercanas.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -541,8 +542,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = XBike/Info.plist;
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Local network access is needed for tests";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "This app need track your route";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Su ubicación será usada para encontrar las sucursales más cercanas.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "This app need track your route";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Su ubicación será usada para encontrar las sucursales más cercanas.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
