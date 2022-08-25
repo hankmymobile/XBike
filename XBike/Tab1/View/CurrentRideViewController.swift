@@ -113,13 +113,22 @@ class CurrentRideViewController: UIViewController {
     @IBAction func storeRide(_ sender: Any) {
         self.viewRide1.isHidden = true
         self.viewRide2.isHidden = true
-        self.viewRide3.isHidden = false
+        self.viewRide3.isHidden = true
+        
         let distanceReal = traveledDistance / 1000
         let doubleStr = String(format: "%.3f", distanceReal)
-        let route1 = RouteModel(time: lblTimerView2.text ?? "", addressA: address1, addressB: address2, distance: "\(doubleStr) Km")
+        let imageRoute: UIImage = takeScreenshot()
+        var data: Data?
+        data = imageRoute.jpegData(compressionQuality: 1.0)
+        
+        let route1 = RouteModel(time: lblTimerView2.text ?? "", addressA: address1, addressB: address2, distance: "\(doubleStr) Km", image: data ?? Data())
         
         self.currentRidePresenter.setViewDelegate(currentRidePresenterDelegate: self)
         self.currentRidePresenter.saveRoute(route: route1)
+        
+        self.viewRide1.isHidden = true
+        self.viewRide2.isHidden = true
+        self.viewRide3.isHidden = false
     }
     
     @IBAction func deleteRide(_ sender: Any) {
@@ -196,6 +205,20 @@ class CurrentRideViewController: UIViewController {
         }
       }
     }
+    
+    func takeScreenshot() -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(self.mapView.bounds.size, false, UIScreen.main.scale)
+        self.mapView.drawHierarchy(in: self.mapView.bounds, afterScreenUpdates: true)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        if (image != nil)
+        {
+            return image!
+        }
+        return UIImage()
+    }
+    
 }
 
 extension CurrentRideViewController: CurrentRidePresenterDelegate {

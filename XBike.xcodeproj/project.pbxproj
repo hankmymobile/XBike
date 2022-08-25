@@ -19,6 +19,7 @@
 		F89FDD3228B6BB3C004713B7 /* RoutesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89FDD3128B6BB3C004713B7 /* RoutesService.swift */; };
 		F89FDD3628B6BCA0004713B7 /* MyProgressPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89FDD3528B6BCA0004713B7 /* MyProgressPresenter.swift */; };
 		F89FDD3B28B6C312004713B7 /* CurrentRidePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89FDD3A28B6C312004713B7 /* CurrentRidePresenter.swift */; };
+		F89FDD3D28B7073C004713B7 /* PopUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89FDD3C28B7073C004713B7 /* PopUpViewController.swift */; };
 		F8A5C2C928B60AEB0010C737 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A5C2C828B60AEB0010C737 /* AppDelegate.swift */; };
 		F8A5C2CD28B60AEB0010C737 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A5C2CC28B60AEB0010C737 /* OnboardingViewController.swift */; };
 		F8A5C2D028B60AEB0010C737 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8A5C2CE28B60AEB0010C737 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 		F89FDD3128B6BB3C004713B7 /* RoutesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutesService.swift; sourceTree = "<group>"; };
 		F89FDD3528B6BCA0004713B7 /* MyProgressPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyProgressPresenter.swift; sourceTree = "<group>"; };
 		F89FDD3A28B6C312004713B7 /* CurrentRidePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentRidePresenter.swift; sourceTree = "<group>"; };
+		F89FDD3C28B7073C004713B7 /* PopUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpViewController.swift; sourceTree = "<group>"; };
 		F8A5C2C528B60AEB0010C737 /* XBike.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XBike.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8A5C2C828B60AEB0010C737 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F8A5C2CC28B60AEB0010C737 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 			isa = PBXGroup;
 			children = (
 				F89FDD2328B68130004713B7 /* MyProgressViewController.swift */,
+				F89FDD3C28B7073C004713B7 /* PopUpViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 				F8A5C2CD28B60AEB0010C737 /* OnboardingViewController.swift in Sources */,
 				F89FDD3B28B6C312004713B7 /* CurrentRidePresenter.swift in Sources */,
 				F8A5C2DF28B618080010C737 /* OnboardingContentViewController.swift in Sources */,
+				F89FDD3D28B7073C004713B7 /* PopUpViewController.swift in Sources */,
 				F8A5C2DD28B617E40010C737 /* OnboardingPageViewController.swift in Sources */,
 				F89FDD3228B6BB3C004713B7 /* RoutesService.swift in Sources */,
 				F8A5C2C928B60AEB0010C737 /* AppDelegate.swift in Sources */,

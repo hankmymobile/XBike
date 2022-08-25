@@ -26,6 +26,7 @@ class MyProgressViewController: UIViewController {
         self.myProgressPresenter.setViewDelegate(myProgressPresenterDelegate: self)
         self.tableViewProgress.register(UINib(nibName: "ProgressTableViewCell", bundle: nil), forCellReuseIdentifier: "ProgressTableViewCell")
         self.tableViewProgress.separatorStyle = UITableViewCell.SeparatorStyle.singleLine
+        self.tableViewProgress.isUserInteractionEnabled = true
 
     }
 }
@@ -46,7 +47,17 @@ extension MyProgressViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 110
     }
- 
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let storyBoard: UIStoryboard = UIStoryboard(name: "InitStoryboard", bundle: nil)
+        let popUp = storyBoard.instantiateViewController(withIdentifier: "PopUp") as! PopUpViewController
+        popUp.modalTransitionStyle = .crossDissolve
+        var image: UIImage? = UIImage(data: arrayRout[indexPath.row]?.image ?? Data())
+        self.present(popUp, animated: true, completion: {
+            popUp.imagen.image = image
+        })
+    }
+    
 }
 
 extension MyProgressViewController: MyProgressPresenterDelegate {
