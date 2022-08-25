@@ -31,7 +31,6 @@ class CurrentRideViewController: UIViewController {
     let locationManager = CLLocationManager()
     var startLocation: CLLocation!
     var lastLocation: CLLocation!
-    var startDate: Date!
     var traveledDistance: Double = 0
     var address1 = ""
     var address2 = ""
@@ -96,6 +95,9 @@ class CurrentRideViewController: UIViewController {
         self.viewRide3.isHidden = true
         if isRouteStarted {
             self.lblTimerView2.text = self.lblTimerView1.text
+            let distanceReal = traveledDistance / 1000
+            let doubleStr = String(format: "%.3f", distanceReal)
+            self.lblDistanceView2.text = "\(doubleStr) Km"
             timer.pause()
         }else{
             timer.reset()
@@ -107,8 +109,9 @@ class CurrentRideViewController: UIViewController {
         self.viewRide1.isHidden = true
         self.viewRide2.isHidden = true
         self.viewRide3.isHidden = false
-        
-        let route1 = RouteModel(time: lblTimerView2.text ?? "", addressA: address1, addressB: address2, distance: "22 Km")
+        let distanceReal = traveledDistance / 1000
+        let doubleStr = String(format: "%.3f", distanceReal)
+        let route1 = RouteModel(time: lblTimerView2.text ?? "", addressA: address1, addressB: address2, distance: "\(doubleStr) Km")
         
         self.currentRidePresenter.setViewDelegate(currentRidePresenterDelegate: self)
         self.currentRidePresenter.saveRoute(route: route1)
@@ -131,6 +134,10 @@ class CurrentRideViewController: UIViewController {
     }
     
     func clearInfo(){
+        timer.reset()
+        startLocation = nil
+        lastLocation = nil
+        traveledDistance = 0
         hasAddress1 = false
         hasAddress2 = false
         isRouteStarted = false
@@ -254,9 +261,27 @@ extension CurrentRideViewController: CLLocationManagerDelegate {
             return
         }
         
+        print("Traveled Distance:",  traveledDistance)
+        
+        lastLocation = locations.last
         // 7
         mapView.camera = GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0)
+        
+        if timer.state == .running {
+            if startLocation == nil {
+                    startLocation = locations.first as! CLLocation
+            } else {
+                let lastLocation = locations.last as! CLLocation
+                let distance = startLocation.distance(from: lastLocation)
+                startLocation = lastLocation
+                if distance > 0 && distance < 5 {
+                    traveledDistance += distance
+                }
+            }
+        }
+        
         if !hasAddress1 && timer.state == .running {
+            
             hasAddress1 = true
             reverseGeocodeCoordinate(GMSCameraPosition(target: location.coordinate, zoom: 15, bearing: 0, viewingAngle: 0).target, labelShow: 1)
         }else {
