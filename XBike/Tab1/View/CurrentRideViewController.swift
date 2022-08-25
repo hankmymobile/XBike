@@ -37,6 +37,7 @@ class CurrentRideViewController: UIViewController {
     var hasAddress1 = false
     var hasAddress2 = false
     var goCurrentLocationCamera = true
+    var callsUpdate = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,9 +54,10 @@ class CurrentRideViewController: UIViewController {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startMonitoringSignificantLocationChanges()
+        locationManager.allowsBackgroundLocationUpdates = true
         locationManager.startUpdatingLocation()
         locationManager.distanceFilter = 1
+        locationManager.requestLocation()
         mapView.isMyLocationEnabled = true
         mapView.settings.myLocationButton = true
         if !hasLocationPermission() {
@@ -289,9 +291,13 @@ extension CurrentRideViewController: CLLocationManagerDelegate {
                 polyline.map = mapView
                 
                 startLocation = lastLocation
-                if distance > 0 && distance < 5 {
+                
+                callsUpdate += 1
+                
+                if callsUpdate > 3 {
                     traveledDistance += distance
                 }
+                
             }
         }
         
